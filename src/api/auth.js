@@ -12,6 +12,22 @@ export class Auth{
         });
         console.log(response);
     }
+
+    async signInVerify(data) {
+        const response = await fetch(
+          `${ENV.BASE_API}${API_ROUTES.SIGNINVERIFY}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          }
+        );
+        if (!response.ok) {
+          const err = await response.json().catch(() => ({}));
+          throw new Error(err.message || "Verification failed");
+        }
+        return response.json();
+      }
 };
 
 export const auth = new Auth();

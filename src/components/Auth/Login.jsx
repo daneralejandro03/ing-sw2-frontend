@@ -1,13 +1,17 @@
-import { Typography } from "antd";
+import { Typography, Modal } from "antd";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./Login.css";
 import { auth } from "../../api/auth";
 import { setLoading } from "../../redux/authSlice";
+import { useNavigate } from "react-router-dom";
+
 
 const { Title } = Typography;
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = React.useState({
     email: "",
     current_password: "",
@@ -58,10 +62,45 @@ const Login = () => {
     try {
       const response = await auth.signIn(formData);
       console.log(response);
+
+      setShow2FAModal(true);
+      
     } catch (error) {
       setLoginError("Invalid email or password");
     }
   };
+
+  const [show2FAModal, setShow2FAModal] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
+
+  const handleVerify2FA = async () => {
+    try {
+      const email = formData.email;
+  
+      const result = await auth.signInVerify({
+        email,
+        code: verificationCode,
+      });
+
+      if (result.success) {
+        setShow2FAModal(false);
+        navigate("/dashboard");
+      } else {
+        console.log('cuack');
+        
+        alert(result.message || "El código no es correcto.");
+
+      }
+    } catch (err) {
+      Modal.error({
+        title: "Error",
+        content: "Hubo un problema validando el código. Intenta de nuevo.",
+      });
+    }
+  };
+  
+  
+
 
   return (
     <div className="login-container">
@@ -104,8 +143,32 @@ const Login = () => {
           {loading ? "Logging in..." : "Login"}
         </button>
       </form>
+
+      <Modal
+        title="Verify  Code"
+        
+        open={show2FAModal}
+        onOk={handleVerify2FA}
+        onCancel={() => setShow2FAModal(false)}
+        okText="Verify"
+        cancelText="Cancel"
+      >
+
+        <p>Recuerda revisar tus mensajes directos, tú código solo va a estar disponible por 5 minutos </p>
+
+        <input
+          type="text"
+          placeholder="Enter verification code"
+          value={verificationCode}
+          onChange={(e) => setVerificationCode(e.target.value)}
+          style={{ width: "100%", padding: 8, marginTop: 10 }}
+        />
+      </Modal>
+
     </div>
   );
+
+  
 };
 
 export default Login;
