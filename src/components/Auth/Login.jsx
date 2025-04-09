@@ -84,12 +84,11 @@ const Login = () => {
 
       if (result.success) {
         setShow2FAModal(false);
+        localStorage.setItem("token", result.token);
+        localStorage.setItem("user", JSON.stringify(result.user)); 
         navigate("/dashboard");
       } else {
-        console.log('cuack');
-        
         alert(result.message || "El código no es correcto.");
-
       }
     } catch (err) {
       Modal.error({
