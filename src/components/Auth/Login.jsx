@@ -6,7 +6,6 @@ import { auth } from "../../api/auth";
 import { setLoading } from "../../redux/authSlice";
 import { useNavigate } from "react-router-dom";
 
-
 const { Title } = Typography;
 
 const Login = () => {
@@ -64,7 +63,6 @@ const Login = () => {
       console.log(response);
 
       setShow2FAModal(true);
-      
     } catch (error) {
       setLoginError("Invalid email or password");
     }
@@ -76,7 +74,7 @@ const Login = () => {
   const handleVerify2FA = async () => {
     try {
       const email = formData.email;
-  
+
       const result = await auth.signInVerify({
         email,
         code: verificationCode,
@@ -85,7 +83,7 @@ const Login = () => {
       if (result.success) {
         setShow2FAModal(false);
         localStorage.setItem("token", result.token);
-        localStorage.setItem("user", JSON.stringify(result.user)); 
+        localStorage.setItem("user", JSON.stringify(result.user));
         navigate("/dashboard");
       } else {
         alert(result.message || "El código no es correcto.");
@@ -97,9 +95,6 @@ const Login = () => {
       });
     }
   };
-  
-  
-
 
   return (
     <div className="login-container">
@@ -145,15 +140,16 @@ const Login = () => {
 
       <Modal
         title="Verify  Code"
-        
         open={show2FAModal}
         onOk={handleVerify2FA}
         onCancel={() => setShow2FAModal(false)}
         okText="Verify"
         cancelText="Cancel"
       >
-
-        <p>Recuerda revisar tus mensajes directos, tú código solo va a estar disponible por 5 minutos </p>
+        <p>
+          Recuerda revisar tus mensajes directos, tú código solo va a estar
+          disponible por 5 minutos{" "}
+        </p>
 
         <input
           type="text"
@@ -163,11 +159,8 @@ const Login = () => {
           style={{ width: "100%", padding: 8, marginTop: 10 }}
         />
       </Modal>
-
     </div>
   );
-
-  
 };
 
 export default Login;

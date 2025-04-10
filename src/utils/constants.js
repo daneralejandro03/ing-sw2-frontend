@@ -8,5 +8,7 @@ export const ENV = {
     SIGNIN: "/auth/signin",
     SIGNINVERIFY: "/auth/signin/verify",
     CSV_UPLOAD: "/csv/upload",
+    MUNICIPIOS: "/csv/municipios",
+    DEPARTAMENTOS: "/csv/departamentos",
   },
 };
